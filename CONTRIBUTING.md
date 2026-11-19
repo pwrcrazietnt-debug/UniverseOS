@@ -7,9 +7,10 @@ UniverseOS is at an early planning stage. The most useful contributions right no
 ## Before starting
 
 1. Read the [README](README.md), [architecture](docs/ARCHITECTURE.md), and [roadmap](docs/ROADMAP.md).
-2. Search existing issues and discussions.
-3. For major design changes, open an issue first so the community can discuss the trade-offs.
-4. Avoid building against an unapproved assumption about the base distribution or runtime interface.
+2. Read [COMMUNITY.md](COMMUNITY.md) for ways to contact the project lead and participate.
+3. Search existing issues and discussions.
+4. For major design changes, open an issue first so the community can discuss the trade-offs.
+5. Avoid building against an unapproved assumption about the base distribution or runtime interface.
 
 ## Contribution expectations
 
