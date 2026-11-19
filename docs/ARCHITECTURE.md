@@ -4,29 +4,32 @@
 
 UniverseOS is planned as a Linux-based operating-system distribution with a custom integration layer and desktop experience. It is not initially a new kernel. A Linux foundation provides hardware support, drivers, security primitives, filesystems, networking, and a large native application ecosystem.
 
-The system is divided into layers so that the base OS can remain usable even when an optional compatibility runtime is absent or broken.
+The system is divided into layers so that the base OS can remain usable even when an optional compatibility runtime is absent or broken. A small built-in desktop provides a friendly first-boot and recovery experience; larger desktop environments and feature groups are opt-in.
 
 ## 2. Layer model
 
 ```text
 +------------------------------------------------------+
-|                  UniverseOS Desktop                  |
-|  shell | settings | app library | notifications      |
+|          Minimal built-in Universe Desktop           |
+|     shell | settings | app library | permissions     |
++------------------------------------------------------+
+|            Optional desktop / feature modules        |
+|       alternate desktops | tools | integrations      |
 +------------------------------------------------------+
 |              App discovery and management            |
-|  catalog | format detection | install UX | updates   |
+|       catalog | format detection | install UX        |
 +------------------------------------------------------+
 |             Compatibility / execution                |
 |  Linux | Windows (Wine/Proton) | Android (ART-based)  |
 |                 macOS research track                  |
 +------------------------------------------------------+
 |              Isolation and permissions               |
-|  user separation | sandboxing | portals | policies   |
+|       sandboxing | portals | policies | identities   |
 +------------------------------------------------------+
 |              Linux distribution foundation           |
-|  kernel | drivers | system services | package base   |
+|       kernel | drivers | core services | packages    |
 +------------------------------------------------------+
-|                    Hardware                           |
+|                       Hardware                       |
 +------------------------------------------------------+
 ```
 
@@ -40,10 +43,25 @@ Initial direction:
 - Native package management inherited from the selected base.
 - Reproducible build and image-generation tooling.
 - Secure boot support where feasible, with signed boot artifacts as a design goal.
+- A minimal built-in desktop and essential setup/recovery tools.
+- Optional components installed only after the user reviews what they add and what dependencies they require.
 
 The base distribution has not yet been selected. That decision should be made through a documented comparison of maintenance burden, package availability, image tooling, security updates, and hardware support.
 
-## 4. Application catalog and format detection
+## 4. Lightweight desktop and modular installation
+
+The built-in Universe Desktop is the default graphical experience. It should be small, accessible, and sufficient for setup, launching apps, changing settings, managing updates, and recovering from common problems.
+
+The desktop is not intended to become a mandatory bundle of every feature. Alternate desktop environments, compatibility runtimes, gaming tools, developer tools, multimedia applications, and optional services should be separately installable and removable.
+
+The installer and first-boot setup should:
+- Offer clear Minimal, Balanced, and Custom choices.
+- Explain the purpose, approximate size, dependencies, and network requirements of optional components.
+- Never silently install optional runtimes or third-party services.
+- Allow users to skip optional components and add them later.
+- Keep a working minimal desktop if an optional module fails or is removed.
+
+## 5. Application catalog and format detection
 
 A format handler should identify a file by content and validated metadata, not just its filename extension. It should return a structured result containing:
 - Detected format and confidence.
@@ -65,7 +83,7 @@ Examples of intended routing:
 - `.dmg` / `.pkg`: identify and inspect where possible; do not imply that extraction enables execution. macOS app execution remains an exploratory compatibility problem.
 - `.tar.gz`: generic archive until its contents and installation metadata are inspected.
 
-## 5. Runtime adapters
+## 6. Runtime adapters
 
 Each ecosystem should implement a common adapter contract:
 1. Detect whether the runtime is installed and healthy.
@@ -92,7 +110,9 @@ Investigate established Android runtime approaches, including ART-based environm
 
 This is a research-only track. macOS apps can depend on Darwin/XNU behavior, Apple frameworks, code signing, entitlements, proprietary services, and Apple-specific hardware. File extraction or API stubs are not equivalent to a supported runtime. Any work must respect applicable licenses and platform restrictions.
 
-## 6. Security model
+## 7. Security and privacy model
+
+Security and privacy are architectural requirements, not marketing claims.
 
 - Never run installers automatically after detection.
 - Separate package inspection from installation and execution.
@@ -103,28 +123,38 @@ This is a research-only track. macOS apps can depend on Darwin/XNU behavior, App
 - Make provenance and verification status visible.
 - Do not silently disable OS security controls.
 - Provide clear uninstall and data-removal behavior.
+- Ship without advertising IDs, ad SDKs, or advertising services.
+- Disable non-essential telemetry and analytics by default; no hidden collection.
+- Do not require a cloud account for ordinary local OS use.
+- Keep diagnostics local by default. Any optional sharing must be clearly described, separately consented to, and easy to decline.
+- Minimize network connections and document the purpose of required endpoints.
+- Provide controls to inspect app permissions, background services, and network activity.
+
+See [PRIVACY.md](../PRIVACY.md) for the detailed privacy requirements. The threat model must also document limits: installed applications, hardware firmware, network providers, and upstream components can have their own data practices. UniverseOS must not claim that it can guarantee privacy beyond the controls it can verify.
 
 Sandboxing is a design requirement, not a claim that every proposed runtime is already safely sandboxed.
 
-## 7. Desktop experience
+## 8. Desktop experience
 
-The desktop should provide:
+The built-in desktop should provide:
+- A lightweight shell with launcher, settings, status area, and basic window management.
 - A unified application library with ecosystem and compatibility labels.
 - Clear install, launch, update, and uninstall flows.
 - Runtime health and dependency reporting.
 - Permission prompts with understandable explanations.
 - Search across installed apps and available catalogs.
 - A fallback path to native package tools for advanced users.
+- A privacy dashboard for permissions, background services, and network activity.
 
 The desktop must not hide ecosystem differences that affect reliability or security.
 
-## 8. Hardware and architecture strategy
+## 9. Hardware and architecture strategy
 
 The first development target should be x86_64 PCs. ARM64 can be considered after the build and runtime model is stable. GPU acceleration and graphics translation should use established upstream components wherever possible.
 
 Low-resource operation is a goal, but performance claims must be backed by repeatable measurements on documented hardware.
 
-## 9. Decisions still open
+## 10. Decisions still open
 
 These decisions require issues and documented trade-off discussions:
 - Base distribution and release model.
