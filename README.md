@@ -34,6 +34,7 @@ See:
 - [Roadmap](docs/ROADMAP.md)
 - [Privacy principles](PRIVACY.md)
 - [Contributing](CONTRIBUTING.md)
+- [Community and contact](COMMUNITY.md)
 - [Security policy](SECURITY.md)
 
 ## Guiding principles
@@ -64,7 +65,7 @@ See:
 
 ## Getting involved
 
-Start with the roadmap and open an issue to propose a feature, report a concern, or volunteer for a subsystem. Please discuss major architectural changes before building large dependent components.
+Want to help build UniverseOS? Read [CONTRIBUTING.md](CONTRIBUTING.md), check the [roadmap](docs/ROADMAP.md), and visit [COMMUNITY.md](COMMUNITY.md) for ways to get in touch. Code, testing, documentation, design, accessibility feedback, and thoughtful issue reports are all valuable.
 
 ## Name
 
